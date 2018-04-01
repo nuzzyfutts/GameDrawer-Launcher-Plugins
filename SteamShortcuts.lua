@@ -6,7 +6,7 @@
 			{string} USER_ID - The user's steam ID
 ]]
 
---SteamShortcuts 'C:/Program Files (x86)/Steam/' 75154095
+--SteamShortcuts 'C:\Program Files (x86)\Steam\' 75154095
 --function main(DEFAULT_STEAM_PATH, USER_ID)				--For use in game drawer
 function main(args)									--For use in internal testing
 	local DEFAULT_STEAM_PATH = args[1]
@@ -91,18 +91,21 @@ function main(args)									--For use in internal testing
 		for i = 1, table.getn(shortcutsTable) do
 
 			--if this line has the number for this app, assign currNum
-			if string.match(shortcutsTable[i], '^ %d') then
-				currNum = string.match(shortcutsTable[i], '^ (%d*)')
+			if string.match(shortcutsTable[i], '^%d') then
+				debug("App Number match: ", shortcutsTable[i])
+				currNum = shortcutsTable[i]
 			end
 
 			--if this line has the app name, assign currName
-			if string.match(shortcutsTable[i], '^AppName ') then
-				currName = string.match(shortcutsTable[i], '^AppName (.*)')
+			if string.match(shortcutsTable[i], '^AppName') then
+				debug("App Name match: ", shortcutsTable[i])
+				currName = shortcutsTable[i+1]
 			end
 
 			--if this line has the app path, assign currPath
-			if string.match(shortcutsTable[i], '^exe ') then
-				currPath = string.match(shortcutsTable[i], '^exe "(.*)"')
+			if string.match(shortcutsTable[i], '^exe') then
+				debug("App Path match: ", shortcutsTable[i])
+				currPath = shortcutsTable[i+1]
 			end
 			
 			--finalise currTable, push to resultTable and start over
@@ -112,7 +115,7 @@ function main(args)									--For use in internal testing
 				if currNum == nil then
 					currNum = 0
 				end
-				currTable["appID"] = 'steam-shortcut-'..currNum
+				currTable["appID"] = currNum
 				currTable["lastPlayed"] = nil
 				currTable["appName"] = currName
 				currTable["installed"] = true
@@ -135,7 +138,7 @@ function main(args)									--For use in internal testing
 	end
 
 	local shortcutVDFResult = readVDFFile(SHORTCUT_VDF_PATH)
-	local final = nil
+	local final = {}
 
 	--if the file wasn't found, set final to nil and return a debug statement
 	if shortcutVDFResult == nil then
@@ -148,7 +151,7 @@ function main(args)									--For use in internal testing
 	
 	--debug code
 	for a = 1, table.getn(final) do
-		debug(final[a].appID.."", final[a].appName.."",final[a].appPath.."","")
+		debug(final[a].appID, final[a].appName, final[a].appPath,"")
 	end
 	debug("Total number of games found: "..table.getn(final))
 
