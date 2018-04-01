@@ -19,8 +19,9 @@ All the games from all launchers will use this standardized format. If any chang
 ## Compatability
 - Steam
 	- Once provided with a default steam directory, obtains all games across all Steam folders located in each drive.
-	-Grabs banners and last played data for sorting
-	-Grabs urls for launching games through the use of Steam's Desktop API
+	- Grabs banners and last played data for sorting
+	- Grabs urls for launching games through the use of Steam's Desktop API
+	- __Now supports games manually added to Steam__
 - Battlenet
 	- Grabs all games and banners for all games on Battlenet
 	- Grabs urls for launching games through the use of Blizzard's Desktop API
