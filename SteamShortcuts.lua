@@ -6,11 +6,7 @@
 			{string} USER_ID - The user's steam ID
 ]]
 
---SteamShortcuts 'C:\Program Files (x86)\Steam\' 75154095
---function main(DEFAULT_STEAM_PATH, USER_ID)				--For use in game drawer
-function main(args)									--For use in internal testing
-	local DEFAULT_STEAM_PATH = args[1]
-	local USER_ID = args[2]
+function main(DEFAULT_STEAM_PATH, USER_ID)				--For use in game drawer
 	local SHORTCUT_VDF_PATH = DEFAULT_STEAM_PATH .. 'userdata\\'..USER_ID..'\\config\\shortcuts.vdf'
 
 	--Function to read the shortcuts.vdf file and return a 
@@ -47,6 +43,11 @@ function main(args)									--For use in internal testing
 			if resultTable[i] == '' then
 				table.remove(resultTable, i)
 			end
+		end
+
+		debug("Entries gained from VDF File output:")
+		for i = 1, table.getn(resultTable) do
+			debug(resultTable[i])
 		end
 
 		--return the final table
@@ -87,24 +88,25 @@ function main(args)									--For use in internal testing
 		local currTable = {}
 		local resultTable = {}
 
+		debug("Shortcut VDF parsing table output:")
+
 		--for all entries in the table
 		for i = 1, table.getn(shortcutsTable) do
 
+			debug(shortcutsTable[i])
+
 			--if this line has the number for this app, assign currNum
 			if string.match(shortcutsTable[i], '^%d') then
-				debug("App Number match: ", shortcutsTable[i])
 				currNum = shortcutsTable[i]
 			end
 
 			--if this line has the app name, assign currName
 			if string.match(shortcutsTable[i], '^AppName') then
-				debug("App Name match: ", shortcutsTable[i])
 				currName = shortcutsTable[i+1]
 			end
 
 			--if this line has the app path, assign currPath
 			if string.match(shortcutsTable[i], '^exe') then
-				debug("App Path match: ", shortcutsTable[i])
 				currPath = shortcutsTable[i+1]
 			end
 			
