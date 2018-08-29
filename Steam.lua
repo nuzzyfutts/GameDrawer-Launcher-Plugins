@@ -1,17 +1,15 @@
 --[[
 	@Author: NuzzyFutts
 	@Github: github.com/NuzzyFutts
-	@File: Steam
-	@input: {string} DEFAULT_STEAM_PATH - The path of the default steam directory
-			{string} USER_ID - The user's steam ID
+	@File: getSteamGames
+	@input: {table} argv - A list of inputs
+	Order of inputs:
+		1. {string} defaultSteamPath - The path of the default steam directory
+		2. {string} userID - The user's steam ID
 ]]
-
---function main(DEFAULT_STEAM_PATH, USER_ID)		-- For use in game drawer
-function main(args)								-- For internal testing
-
-	local DEFAULT_STEAM_PATH = args[1]
-	local USER_ID = args[2]
-
+ 
+function main(DEFAULT_STEAM_PATH,USER_ID)
+	
 	local function getIDsAndLastPlayed()
 		local LOCAL_CONFIG_VDF_PATH = DEFAULT_STEAM_PATH.."userdata\\"..USER_ID.."\\config\\localconfig.vdf"
 		local vdfFile = io.open(LOCAL_CONFIG_VDF_PATH,"r")
@@ -20,22 +18,13 @@ function main(args)								-- For internal testing
 		local level = 0								--used to keep track how deep in entries we currently are
 		local currApp = {}							--used to keep track of data for current app
 		local apps = {}								--used for storing data of all apps
-		local previousLine = ""
+		previousLine = ""
 
 		if vdfFile then
 			for line in vdfFile:lines() do
-
 				count = count + 1
 				line = string.lower(line)
 				if found or string.match(line,'%s*apps') then
-
-					--=====================================================================================
-					--                                        DEBUG
-					--=====================================================================================
-					--This line is used for debugging
-					--It will print every line in terminal, as well as log it in
-					--rainmeter log to assist debugging
-					--debug(line)
 
 					--increment/decrement level to check for closing of individual apps
 					--entries and for checking when apps section has ended
@@ -59,12 +48,6 @@ function main(args)								-- For internal testing
 							if currApp.lastPlayed == nil then
 								currApp.lastPlayed = 0				--set lastplayed timestamp to 0
 							end
-							
-							--=====================================================================================
-							--                                        DEBUG
-							--=====================================================================================
-							--commented debug code to print all appIDs and lastPlayed timestamps
-							--debug("appID: "..currApp.appID,"Last Played: "..currApp.lastPlayed)
 
 							currApp = {}
 							previousLine = "close"
@@ -98,15 +81,12 @@ function main(args)								-- For internal testing
 
 					--checks to stop reading file if apps section has ended
 					if level == 0  and start ~= count then
-						vdfFile:close()
 						break
 					end
 				end
 			end
-	else
-		--VDF file not found... Return nil for check further on in the script
-		return nil
-	end
+			vdfFile:close()
+		end
 		return apps
 	end
 
@@ -127,8 +107,8 @@ function main(args)								-- For internal testing
 					newdirline = string.gsub(dirline,'\\\\','\\').."\\"
 					table.insert(dirs,newdirline)								--insert that path into the table
 				end
-				libVDFFile:close()
 			end
+			libVDFFile:close()
 		end
 		return dirs																--return table of directories
 	end
@@ -157,19 +137,19 @@ function main(args)								-- For internal testing
 						if appName then
 							currTable["appID"] = appTable[curr].appID
 							currTable["lastPlayed"] = appTable[curr].lastPlayed
+							currTable["appPath"] = "steam://rungameid/"..appTable[curr].appID
+							currTable["bannerURL"] = "http://cdn.akamai.steamstatic.com/steam/apps/"..appTable[curr].appID.."/header.jpg"
+							currTable["bannerName"] = appTable[curr].appID..".jpg"
 							currTable["appName"] = appName														--set appName in appTable
 							currTable["installed"] = true														--set installed var in appTable (only for consistency across launchers)
 							currTable["hidden"] = false															--PLACEHOLDER/INITIAL ASSIGNMENT parameter for if game should be hidden
-							currTable["appPath"] = "steam://rungameid/"..appTable[curr].appID
-                            currTable["bannerURL"] = "http://cdn.akamai.steamstatic.com/steam/apps/"..appTable[curr].appID.."/header.jpg"
-                            currTable["bannerName"] = appTable[curr].appID..".jpg"
-							currTable["launcher"] = "steam"														--defines which launcher this game is from
+							currTable["launcher"] = "Steam"														--defines which launcher this game is from
 							table.insert(resultTable,currTable)
 							currTable = {}
 							break
 						end
-						manifestFile:close()
 					end
+					manifestFile:close()
 				end
 			end
 		end
@@ -178,23 +158,16 @@ function main(args)								-- For internal testing
 
 	local dirs = getAllDirectories()
 	local ids = getIDsAndLastPlayed()
-	if ids == nil then
-		local final = nil
-		debug("VDF file not found... Stopping search")
-	else
-		local final = checkAppManifests(dirs,ids)
-	end
+	local final = checkAppManifests(dirs,ids)
+
 	--=====================================================================================
 	--                                        DEBUG
 	--=====================================================================================
 	--Debug code to log all found appNames, lastPlayed timestamps, and appIDs
 	for a = 1, table.getn(final) do
-		debug(final[a].appName.."",final[a].lastPlayed.."",final[a].appID.."","")
+		debug("App Name: "..final[a].appName.."","Last Played: "..final[a].lastPlayed.."","App ID: "..final[a].appID.."","")
 	end
 	debug("Total number of games found: ",table.getn(final))
 
 	return final
 end
-
---test command for debugging on my machine with my tools
---Steam "C:\Program Files (x86)\Steam\" 75154095

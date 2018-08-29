@@ -9,6 +9,31 @@
 function main(DEFAULT_STEAM_PATH, USER_ID)				--For use in game drawer
 	local SHORTCUT_VDF_PATH = DEFAULT_STEAM_PATH .. 'userdata\\'..USER_ID..'\\config\\shortcuts.vdf'
 
+	--function to split a string into a table by a delimeter/pattern
+	local function split(pString, pPattern)
+
+		local Table = {}
+		local fpat = "(.-)" .. pPattern
+		local last_end = 1
+		local s, e, cap = pString:find(fpat, 1)
+
+		while s do
+			if s ~= 1 or cap ~= "" then
+				table.insert(Table,cap)
+			end
+			last_end = e+1
+			s, e, cap = pString:find(fpat, last_end)
+		end
+
+		if last_end <= #pString then
+			cap = pString:sub(last_end)
+			table.insert(Table, cap)
+		end
+
+		return Table
+	end
+
+
 	--Function to read the shortcuts.vdf file and return a 
 	--(rough) table with the data that we need for the
 	--tables in GameDrawer
@@ -52,30 +77,6 @@ function main(DEFAULT_STEAM_PATH, USER_ID)				--For use in game drawer
 
 		--return the final table
 		return resultTable
-	end
-
-	--function to split a string into a table by a delimeter/pattern
-	function split(pString, pPattern)
-
-		local Table = {}
-		local fpat = "(.-)" .. pPattern
-		local last_end = 1
-		local s, e, cap = pString:find(fpat, 1)
-
-		while s do
-			if s ~= 1 or cap ~= "" then
-				table.insert(Table,cap)
-			end
-			last_end = e+1
-			s, e, cap = pString:find(fpat, last_end)
-		end
-
-		if last_end <= #pString then
-			cap = pString:sub(last_end)
-			table.insert(Table, cap)
-		end
-
-		return Table
 	end
 
 	--finalize the data and return the data table as required by gamedrawer
@@ -124,8 +125,8 @@ function main(DEFAULT_STEAM_PATH, USER_ID)				--For use in game drawer
 				currTable["hidden"] = false
 				currTable["appPath"] = currPath
 				currTable["bannerURL"] = nil
-				currTable["bannerName"] = nil
-				currTable["launcher"] = "steam-shortcuts"
+				currTable["bannerName"] = "placeholder.jpg"
+				currTable["launcher"] = "Steam Shortcuts"
 
 				table.insert(resultTable,currTable)
 
@@ -144,12 +145,10 @@ function main(DEFAULT_STEAM_PATH, USER_ID)				--For use in game drawer
 
 	--if the file wasn't found, set final to nil and return a debug statement
 	if shortcutVDFResult == nil then
-		final = nil
 		debug('Shortcut vdf file not found. Stopping search...')
-	else
-		--else call finaliseTables as normal
-		final = finaliseTables(shortcutVDFResult)
 	end
+
+	final = finaliseTables(shortcutVDFResult)
 	
 	--debug code
 	for a = 1, table.getn(final) do
