@@ -78,7 +78,7 @@ function main(BNET_CONFIG_FILE_PATH)
 					end
 				end
 			end
-			print(familyFile:close())
+			familyFile:close()
 		else
 			--game family file not found file not found
 			debug("Error: Could not find/open the file 'battle.net.config'")
