@@ -25,8 +25,12 @@ All the games from all launchers will use this standardized format. If any chang
 - Battlenet
 	- Grabs all games and banners for all games on Battlenet
 	- Grabs urls for launching games through the use of Blizzard's Desktop API
+- Origin (In Progress)
+	- Currently is able to launch all Origin games on Windows 10 x64.
+	- TODO
+		- Source Banners for Origin Games
+		- Integration testing on different versions of Windows
 
 ### Upcoming
 - GOG Galaxy
-- Origin
 - Bethesda (Maybe)
