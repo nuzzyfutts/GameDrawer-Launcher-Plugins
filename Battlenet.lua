@@ -48,7 +48,7 @@ function main(BNET_CONFIG_FILE_PATH)
 		local games = {}
 
 		if familyFile then
-			for line in io.lines(BNET_CONFIG_FILE_PATH) do
+			for line in familyFile:lines() do
 				
 				count = count + 1
 
@@ -78,7 +78,7 @@ function main(BNET_CONFIG_FILE_PATH)
 					end
 				end
 			end
-			familyFile:close()
+			print(familyFile:close())
 		else
 			--game family file not found file not found
 			debug("Error: Could not find/open the file 'battle.net.config'")
