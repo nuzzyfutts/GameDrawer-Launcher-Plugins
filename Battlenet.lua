@@ -14,7 +14,8 @@ function main(BNET_CONFIG_FILE_PATH)
 							wow="WoW",
 							s2="S2",
 							s1="S1",
-							viper="VIPR"}
+							viper="VIPR"--[[,
+							agent="PLACEHOLDER_FOR_WARCRAFT_3"]]}
 
 	local GAME_NAMES =  	{prometheus="Overwatch",
 							destiny2="Destiny 2",
@@ -24,7 +25,8 @@ function main(BNET_CONFIG_FILE_PATH)
 							wow="World of Warcraft",
 							s2="Starcraft 2",
 							s1="Starcraft",
-							viper="Call of Duty: Black Ops 4"}
+							viper="Call of Duty: Black Ops 4"--[[,
+							agent="Warcraft 3"]]}
 
 	local BANNER_URLS =    {prometheus="http://us.blizzard.com/static/_images/lang/en-us/gamecard-games-overwatch.jpg",
 							destiny2="https://bnetproduct-a.akamaihd.net//ff5/c9fb7c865fa0eb80b1cacef42dd3cb1e-feature-07.png",
@@ -34,7 +36,8 @@ function main(BNET_CONFIG_FILE_PATH)
 							wow="http://us.blizzard.com/static/_images/lang/en-us/gamecard-games-wow.jpg",
 							s2="http://us.blizzard.com/static/_images/lang/en-us/gamecard-games-sc2.jpg",
 							s1="http://us.blizzard.com/static/_images/lang/en-us/gamecard-games-sc1.jpg",
-							viper="https://bnetproduct-a.akamaihd.net//38/c004e9ac19a5b157a01fbe1f07fc92f1-CODBO4-Bnet_Game-Shop_Feature_R1C1-640x360-20180413.png"}
+							viper="https://bnetproduct-a.akamaihd.net//38/c004e9ac19a5b157a01fbe1f07fc92f1-CODBO4-Bnet_Game-Shop_Feature_R1C1-640x360-20180413.png"--[[,
+							agent="http://us.blizzard.com/static/_images/lang/en-us/gamecard-games-war3.jpg"]]}
 
 	local function getInstalledGames()
 		local familyFile = io.open(BNET_CONFIG_FILE_PATH,"r")
@@ -52,7 +55,7 @@ function main(BNET_CONFIG_FILE_PATH)
 				
 				count = count + 1
 
-				if found or string.match(line,'Games') then
+				if found or string.match(line,'^%s*"Games":%s*{') then
 
 					entry = string.match(line,'^%s*"([%w%p]+)": {')
 
@@ -86,14 +89,14 @@ function main(BNET_CONFIG_FILE_PATH)
 		end
 		return games
 	end
-	
+
 	local function finalizeGames(games)
 
 		local resultTable = {}
 		local currTable = {}
 
 		if games ~= nil then 
-			for i=1, table.getn(games) do
+			for i=1, #games do
 				if LIST_OF_GAMES[games[i]] ~= nil and GAME_NAMES[games[i]] ~= nil and BANNER_URLS[games[i]] ~= nil then -- Check to see if we know about this game 
 					currTable["appID"]= LIST_OF_GAMES[games[i]]
 					currTable["appName"] = GAME_NAMES[games[i]]
