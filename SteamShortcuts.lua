@@ -102,7 +102,7 @@ function main(DEFAULT_STEAM_PATH, USER_ID)				--For use in game drawer
 			end
 
 			--if this line has the app name, assign currName
-			if string.match(shortcutsTable[i], '^AppName') then
+			if string.match(shortcutsTable[i], '^appname') then
 				currName = shortcutsTable[i+1]
 			end
 
