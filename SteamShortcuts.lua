@@ -107,7 +107,7 @@ function main(DEFAULT_STEAM_PATH, USER_ID)				--For use in game drawer
 			end
 
 			--if this line has the app path, assign currPath
-			if string.match(shortcutsTable[i], '^exe') then
+			if string.match(shortcutsTable[i], '^Exe') then
 				currPath = shortcutsTable[i+1]
 			end
 			
@@ -123,7 +123,7 @@ function main(DEFAULT_STEAM_PATH, USER_ID)				--For use in game drawer
 				currTable["appName"] = currName
 				currTable["installed"] = true
 				currTable["hidden"] = false
-				currTable["appPath"] = currPath
+				currTable["appPath"] = currPath:gsub('"',''):gsub('\'','')
 				currTable["bannerURL"] = nil
 				currTable["bannerName"] = "placeholder.jpg"
 				currTable["launcher"] = "Steam Shortcuts"
